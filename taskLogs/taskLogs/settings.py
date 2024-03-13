@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'taskLogs.wsgi.application'
 DATABASES = {
     'default': {
            'ENGINE': 'djongo',
-           'NAME': 'logs',
+           'NAME': 'mongo',
        }
 }
 
