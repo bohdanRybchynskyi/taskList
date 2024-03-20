@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'taskManager',
+    'taskApp',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
