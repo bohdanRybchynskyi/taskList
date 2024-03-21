@@ -1,9 +1,12 @@
+import codecs
+import csv
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import FormView
-from .forms import LoginForm, RegisterForm, TaskForm
+from .forms import LoginForm, RegisterForm, TaskForm, ImportTasksForm
 from django.views.generic import ListView
 from .models import Task
 
@@ -45,15 +48,30 @@ class TaskListView(ListView):
 
 
 def create_task(request):
+    form = TaskForm()
+    import_form = ImportTasksForm()
+
     if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            form.instance.user = request.user
-            form.save()
-            return redirect('task-list')
-    else:
-        form = TaskForm()
-    return render(request, 'task/create_task.html', {'form': form})
+        if 'create_task' in request.POST:
+            messages.warning(request, 'No tasks were imported.')
+            form = TaskForm(request.POST)
+            if form.is_valid():
+                form.instance.user = request.user
+                form.save()
+                return redirect('task-list')
+        else:
+            import_form = ImportTasksForm(request.POST, request.FILES)
+            if import_form.is_valid():
+                csv_file = import_form.cleaned_data['csv_file']
+
+                with csv_file.open('r') as file:
+                    csvreader = csv.reader(codecs.iterdecode(file, 'utf-8'))
+                    for row in csvreader:
+                        Task.objects.create(title=row[0], time=row[1], date=row[2], done=row[3], user=request.user)
+
+                return redirect('task-list')
+
+    return render(request, 'task/create_task.html', {'form': form, 'import_form': import_form})
 
 
 def edit_task(request, task_id):
@@ -77,9 +95,8 @@ def delete_task(request, task_id):
         return redirect('task-list')
 
 
-def toggle_task_done(request, task_id):
+def toggle_task_done(task_id):
     task = get_object_or_404(Task, id=task_id)
     task.done = not task.done
     task.save()
     return HttpResponse()
-

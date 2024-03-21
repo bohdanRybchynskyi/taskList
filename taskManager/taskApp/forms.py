@@ -22,3 +22,9 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['title', 'time', 'date', 'done']
+
+
+class ImportTasksForm(forms.Form):
+    csv_file = forms.FileField(label='Upload CSV3 File')
+
+
