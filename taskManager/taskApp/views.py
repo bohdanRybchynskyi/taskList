@@ -1,5 +1,6 @@
 import codecs
 import csv
+from datetime import datetime
 
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -8,6 +9,8 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import FormView
 from .forms import LoginForm, RegisterForm, TaskForm, ImportTasksForm
 from django.views.generic import ListView
+
+from .kafka_producer import KafkaMessageProducer
 from .models import Task
 
 
@@ -58,6 +61,21 @@ def create_task(request):
             if form.is_valid():
                 form.instance.user = request.user
                 form.save()
+
+                kafka_broker = 'kafka:9092'
+                topic = 'task_created'
+                producer = KafkaMessageProducer(kafka_broker, topic)
+
+                message = {
+                    'datetime': datetime.now().isoformat(),
+                    'title': form.instance.title,
+                    'user': request.user.username,
+                    'operation': topic
+                }
+                producer.send_message(message)
+
+                producer.close()
+
                 return redirect('task-list')
         else:
             import_form = ImportTasksForm(request.POST, request.FILES)
@@ -81,6 +99,21 @@ def edit_task(request, task_id):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
+
+            kafka_broker = 'kafka:9092'
+            topic = 'task_updated'
+            producer = KafkaMessageProducer(kafka_broker, topic)
+
+            message = {
+                'datetime': datetime.now().isoformat(),
+                'title': form.instance.title,
+                'user': request.user.username,
+                'operation': topic
+            }
+            producer.send_message(message)
+
+            producer.close()
+
             return redirect('task-list')
     else:
         form = TaskForm(instance=task)
@@ -92,6 +125,21 @@ def delete_task(request, task_id):
     task = get_object_or_404(Task, pk=task_id)
     if request.method == 'POST':
         task.delete()
+
+        kafka_broker = 'kafka:9092'
+        topic = 'task_deleted'
+        producer = KafkaMessageProducer(kafka_broker, topic)
+
+        message = {
+            'datetime': datetime.now().isoformat(),
+            'title': 'task is deleted',
+            'user': request.user.username,
+            'operation': topic
+        }
+        producer.send_message(message)
+
+        producer.close()
+
         return redirect('task-list')
 
 

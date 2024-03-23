@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs</title>
+</head>
+<body>
+    <h1>Logs</h1>
+
+    <form action="{% url 'filter_logs' %}" method="GET">
+        <label for="user">Користувач:</label>
+        <input type="text" id="user" name="user">
+        <button type="submit">Фільтрувати</button>
+    </form>
+
+    <ul>
+        {% for log in logs %}
+            <li>{{ log.datetime }} - {{ log.title }} - {{ log.user }}</li>
+        {% empty %}
+            <li>No logs found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
