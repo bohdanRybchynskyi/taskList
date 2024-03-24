@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  work-network:
+  task-list:
 
 services:
   postgres:
@@ -15,7 +15,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     networks:
-      - work-network
+      - task-list
 
   mongo:
     image: mongo
@@ -24,7 +24,7 @@ services:
     ports:
       - "27017:27017"
     networks:
-      - work-network
+      - task-list
 
   taskmanager:
     build: ./taskManager
@@ -33,7 +33,7 @@ services:
     depends_on:
       - postgres
     networks:
-      - work-network
+      - task-list
 
   tasklogs:
     build: ./taskLogs
@@ -42,7 +42,7 @@ services:
     depends_on:
       - mongo
     networks:
-      - work-network
+      - task-list
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -52,7 +52,7 @@ services:
     ports:
       - 22181:2181
     networks:
-      - work-network
+      - task-list
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -68,4 +68,4 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     networks:
-      - work-network
+      - task-list

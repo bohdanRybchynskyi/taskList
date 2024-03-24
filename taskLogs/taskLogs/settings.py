@@ -57,7 +57,7 @@ ROOT_URLCONF = 'taskLogs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [BASE_DIR / 'logsApp/templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {

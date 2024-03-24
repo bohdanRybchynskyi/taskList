@@ -19,6 +19,9 @@ class RegisterForm(UserCreationForm):
 
 
 class TaskForm(forms.ModelForm):
+    date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date'}))
+    time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+
     class Meta:
         model = Task
         fields = ['title', 'time', 'date', 'done']

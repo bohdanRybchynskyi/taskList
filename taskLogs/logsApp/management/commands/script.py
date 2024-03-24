@@ -7,6 +7,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         kafka_broker = 'kafka:9092'
-        kafka_topics = ['task_created', 'task_deleted', 'task_updated']
+        kafka_topics = ['task_created', 'task_deleted', 'task_updated', 'task_completed']
         consumer = KafkaMessageConsumer(kafka_broker, kafka_topics)
         consumer.consume_messages()

@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+
+{% block title %}Create Task{% endblock %}
+
+{% block content %}
+<h2>Create Task</h2>
+    <form method="post" class="task-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_title">Title:</label>
+            {{ form.title }}
+        </div>
+        <div class="form-group">
+            <label for="id_time">Time:</label>
+            {{ form.time }}
+        </div>
+        <div class="form-group">
+            <label for="id_date">Date:</label>
+            {{ form.date }}
+        </div>
+        <div class="form-group checkbox-label">
+            <label for="id_done">Done</label>
+            {{ form.done }}
+        </div>
+
+        <button type="submit" class="btn btn-primary" name="create_task">Create</button>
+    </form>
+
+    <h2>Import Tasks</h2>
+    <form method="post" enctype="multipart/form-data" class="import-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_csv_file">CSV File:</label>
+            {{ import_form.csv_file}}
+        </div>
+        <button type="submit" class="btn btn-primary" name="import_csv">Import</button>
+    </form>
+{% endblock %}
