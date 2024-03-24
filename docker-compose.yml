@@ -34,6 +34,8 @@ services:
       - postgres
     networks:
       - task-list
+    command: [ "./wait-for-it.sh", "postgres:5432", "--", "python", "manage.py", "runserver", "0.0.0.0:8001"]
+    restart: on-failure
 
   tasklogs:
     build: ./taskLogs
@@ -43,6 +45,7 @@ services:
       - mongo
     networks:
       - task-list
+    restart: on-failure
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest

@@ -38,7 +38,7 @@
 
     <script>
         function toggleTaskDone(taskId) {
-            fetch(`/toggle-task-done/${taskId}/`, {
+            fetch(`/task/done/${taskId}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

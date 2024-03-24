@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.urls import path, include
-from django.views.generic import TemplateView
 from django.contrib.auth.views import LogoutView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
